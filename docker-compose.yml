@@ -1,0 +1,50 @@
+services:
+  mysql-keycloack:
+    image: mysql:5.7
+    networks:
+      - default
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_USER=username
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=database
+      - MYSQL_ROOT_PASSWORD=password
+    volumes:
+      - .docker/mysql-keycloack-data:/var/lib/mysql
+
+  mysql-app:
+    image: mysql:5.7
+    networks:
+      - default
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_USER=username
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=database
+      - MYSQL_ROOT_PASSWORD=password
+    volumes:
+      - .docker/mysql-app-data:/var/lib/mysql
+
+  keycloack:
+    image: quay.io/keycloak/keycloak:26.1.4
+    networks:
+      - default
+    ports:
+      - 8000:8080
+    depends_on:
+      mysql-keycloack:
+        condition: service_started
+    entrypoint: "/opt/keycloak/bin/kc.sh start-dev"
+    environment:
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=password
+      - KC_BOOTSTRAP_ADMIN_USERNAME=username
+      - KC_DB=mysql
+      - KC_DB_USERNAME=username
+      - KC_DB_PASSWORD=password
+      - KC_DB_URL=jdbc:mysql://mysql-keycloack:3306/database
+
+
+networks:
+  default:
