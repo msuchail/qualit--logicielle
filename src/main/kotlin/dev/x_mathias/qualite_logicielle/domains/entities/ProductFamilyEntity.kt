@@ -1,22 +1,19 @@
-package dev.x_mathias.qualite_logicielle.domains.entities;
+package dev.x_mathias.qualite_logicielle.domains.entities
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany
-import jakarta.persistence.Table;
 
-/**
- * @property id String
- * @property name String
- * @property products List<ProductEntity>
- * @constructor
- */
+import jakarta.persistence.*
+
 @Entity
 @Table(name = "product-families")
 class ProductFamilyEntity(
     @Id
     val id: String,
     val name: String,
-    @OneToMany
-    val products: List<ProductEntity>,
+    @OneToMany(
+        fetch = FetchType.EAGER,
+        mappedBy = "productFamily",
+        cascade = [(CascadeType.REMOVE)],
+        orphanRemoval = true
+    )
+    var products: List<ProductEntity>
 )

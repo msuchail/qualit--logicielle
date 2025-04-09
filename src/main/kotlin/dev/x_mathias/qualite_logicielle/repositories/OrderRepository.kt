@@ -1,9 +1,12 @@
-package dev.x_mathias.qualite_logicielle.repositories;
+package dev.x_mathias.qualite_logicielle.repositories
 
-import dev.x_mathias.qualite_logicielle.domains.entities.OrderEntity;
-import org.springframework.data.jpa.repository.JpaRepository
+import dev.x_mathias.qualite_logicielle.domains.entities.OrderDocument
+import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
+import java.util.*
 
 
 @Repository
-interface OrderRepository : JpaRepository<OrderEntity, Long>
+interface OrderRepository : MongoRepository<OrderDocument, UUID> {
+    fun findByUserId(userId: String): MutableList<OrderDocument>
+}

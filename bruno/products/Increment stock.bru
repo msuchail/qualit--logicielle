@@ -1,0 +1,20 @@
+meta {
+  name: Increment stock
+  type: http
+  seq: 6
+}
+
+put {
+  url: http://localhost:8080/api/v1/products/{{product_id}}/increment-stock={{quantity}}
+  body: json
+  auth: none
+}
+
+body:json {
+  10
+}
+
+vars:pre-request {
+  product_id: FIGLOL
+  quantity: 5
+}

@@ -1,0 +1,22 @@
+meta {
+  name: Place Order
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/api/v1/orders/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "invoiceAddressId": 3,
+    "shippingAddressId": 3,
+    "userId": "USERID",
+    "products": {
+      "FIGLOL": 1
+    }
+  }
+}

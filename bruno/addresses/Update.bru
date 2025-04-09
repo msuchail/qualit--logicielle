@@ -1,0 +1,27 @@
+meta {
+  name: Update
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:8080/api/v1/addresses/{{address_id}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "userId": "USERID",
+    "streetNumber": 10,
+    "streetName": "Rdffsqddf",
+    "city": "LYON",
+    "state": "FR",
+    "zipCode": "69000",
+    "country": "France"
+  }
+}
+
+vars:pre-request {
+  address_id: 1
+}

@@ -1,0 +1,15 @@
+meta {
+  name: List by user id
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8080/api/v1/addresses/user={{user_id}}
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  user_id: USERID
+}

@@ -5,4 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ProductFamilyRepository : JpaRepository<ProductFamilyEntity, Long>
+interface ProductFamilyRepository : JpaRepository<ProductFamilyEntity, String>
