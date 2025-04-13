@@ -1,10 +1,10 @@
-FROM maven:3.9.9-eclipse-temurin-21-jdk as build-prod
-COPY . .
-RUN mvn clean package
-
+FROM eclipse-temurin:21-jdk as dev
+WORKDIR /app
+EXPOSE 8080
+ENTRYPOINT ./mvnw spring-boot:run -DskipTest
 
 FROM eclipse-temurin:21-jdk as prod
-
-
-
-COPY . .
+WORKDIR /app
+EXPOSE 8080
+COPY target/qualite-logicielle-0.0.1-SNAPSHOT.jar /target
+ENTRYPOINT java -jar target/qualite-logicielle-0.0.1-SNAPSHOT.jar

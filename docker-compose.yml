@@ -1,4 +1,23 @@
 services:
+  app:
+    build:
+      dockerfile: .docker/Dockerfile
+      context: .
+      target: prod
+    volumes:
+      - .:/app
+    networks:
+      - default
+    environment:
+      - SPRING_DATA_MONGODB_HOST=mongodb
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-app:3306/database
+    depends_on:
+      - mysql-keycloack
+      - mysql-app
+      - mongodb
+    ports:
+      - "8080:8080"
+
   mysql-keycloack:
     image: mysql:8.0
     networks:

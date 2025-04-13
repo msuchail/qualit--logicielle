@@ -1,0 +1,3 @@
+.docker/mongo-app-data
+.docker/mysql-app-data
+.docker/mysql-keycloack-data
