@@ -7,40 +7,42 @@ import dev.x_mathias.qualite_logicielle.exceptions.ProductAlreadyExistsException
 import dev.x_mathias.qualite_logicielle.exceptions.ProductDoesNotExistsException
 import dev.x_mathias.qualite_logicielle.exceptions.ProductFamilyDoesNotExists
 import dev.x_mathias.qualite_logicielle.exceptions.ProductNotEnoughStockException
-import jakarta.annotation.PreDestroy
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
-import org.junit.jupiter.api.MethodOrderer
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestMethodOrder
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.junit.jupiter.Container
-import org.testcontainers.junit.jupiter.Testcontainers
 
-@SpringBootTest
-@Testcontainers
-@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-class ProductServiceTest {
+class ProductServiceTest : AbstractServiceTestClass() {
     companion object {
         @Container
         @ServiceConnection
         @JvmStatic
-        val mysql = MySQLContainer("mysql:5.7")
+        val mysql = MySQLContainer("mysql:8.0")
     }
-    @Autowired lateinit var productFamilyService: ProductFamilyService
-    @Autowired lateinit var productService: ProductService
+
+    @Autowired
+    lateinit var productFamilyService: ProductFamilyService
+    @Autowired
+    lateinit var productService: ProductService
+
+    @BeforeAll()
+    fun beforeAll() {
+        productFamilyService.create(
+            ProductFamilyRequestDto(
+                id = "FIG",
+                name = "Figurine"
+            )
+        )
+    }
 
     @Test
     @Order(1)
     fun testProductCreationWithGoodProudctFamilyId() {
-        productFamilyService.create(ProductFamilyRequestDto(
-            id = "FIG",
-            name = "Figurine"
-        ))
         val productRequestDto = ProductRequestDto(
             id = "FIGLOL",
             name = "Figurine LOL",
@@ -111,13 +113,15 @@ class ProductServiceTest {
     @Test
     @Order(7)
     fun testProductUpdateWithGoodProductFamilyId() {
-        val result = productService.update("FIGLOL", ProductRequestWithoutIdDto(
-            name = "TOTO",
-            purchasePrice = 700u,
-            sellingPrice = 2000u,
-            stock = 10u,
-            productFamilyId = "FIG"
-        ))
+        val result = productService.update(
+            "FIGLOL", ProductRequestWithoutIdDto(
+                name = "TOTO",
+                purchasePrice = 700u,
+                sellingPrice = 2000u,
+                stock = 10u,
+                productFamilyId = "FIG"
+            )
+        )
 
         assertThat(result.name).isEqualTo("TOTO")
     }
@@ -128,26 +132,31 @@ class ProductServiceTest {
         assertThatExceptionOfType(
             ProductDoesNotExistsException::class.java
         ).isThrownBy {
-            productService.update("TOTO", ProductRequestWithoutIdDto(
-                name = "TOTO",
-                purchasePrice = 700u,
-                sellingPrice = 2000u,
-                stock = 10u,
-                productFamilyId = "FIG"
-            ))
+            productService.update(
+                "TOTO", ProductRequestWithoutIdDto(
+                    name = "TOTO",
+                    purchasePrice = 700u,
+                    sellingPrice = 2000u,
+                    stock = 10u,
+                    productFamilyId = "FIG"
+                )
+            )
         }
     }
+
     @Test
     @Order(9)
     fun testProductUpdateFailWithBadFamilyId() {
         assertThatExceptionOfType(ProductFamilyDoesNotExists::class.java).isThrownBy {
-            productService.update("FIGLOL", ProductRequestWithoutIdDto(
-                name = "TOTO",
-                purchasePrice = 700u,
-                sellingPrice = 2000u,
-                stock = 10u,
-                productFamilyId = "TOTO"
-            ))
+            productService.update(
+                "FIGLOL", ProductRequestWithoutIdDto(
+                    name = "TOTO",
+                    purchasePrice = 700u,
+                    sellingPrice = 2000u,
+                    stock = 10u,
+                    productFamilyId = "TOTO"
+                )
+            )
         }
     }
 
@@ -211,10 +220,5 @@ class ProductServiceTest {
         assertThatExceptionOfType(ProductDoesNotExistsException::class.java).isThrownBy {
             productService.findById("FIGLOL")
         }
-    }
-
-    @PreDestroy
-    fun preDestroy() {
-        productFamilyService.delete("FIG")
     }
 }

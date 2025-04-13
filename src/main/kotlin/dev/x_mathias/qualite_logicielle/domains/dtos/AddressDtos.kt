@@ -19,19 +19,8 @@ const val ZIPCODE_LENGTH=5
 
 @Component
 class AddressMapper {
-    fun toEntity(addressRequestDto: AddressRequestDto) = AddressEntity(
-        userId = addressRequestDto.userId,
-        streetNumber = addressRequestDto.streetNumber,
-        streetName = addressRequestDto.streetName,
-        city = addressRequestDto.city,
-        state = addressRequestDto.state,
-        zipCode = addressRequestDto.zipCode,
-        country = addressRequestDto.country
-    )
-
-    fun toEntity(id: Long, addressRequestDto: AddressRequestDto) = AddressEntity(
-        id = id,
-        userId = addressRequestDto.userId,
+    fun toEntity(userId: String, addressRequestDto: AddressRequestDto) = AddressEntity(
+        userId = userId,
         streetNumber = addressRequestDto.streetNumber,
         streetName = addressRequestDto.streetName,
         city = addressRequestDto.city,
@@ -55,7 +44,6 @@ class AddressMapper {
 }
 
 data class AddressRequestDto(
-    val userId: String,
     val streetNumber: Short,
     val streetName: String,
     val city: String,

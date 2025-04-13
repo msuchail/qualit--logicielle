@@ -12,8 +12,8 @@ class AddressService (
     val addressRepository: AddressRepository,
     val addressMapper: AddressMapper
 ) {
-    fun create(addressRequestDto: AddressRequestDto): AddressResponseDto {
-        val addressEntity = addressMapper.toEntity(addressRequestDto)
+    fun create(userId: String, addressRequestDto: AddressRequestDto): AddressResponseDto {
+        val addressEntity = addressMapper.toEntity(userId, addressRequestDto)
         val result = addressRepository.save(addressEntity)
         return addressMapper.fromEntity(result)
     }
@@ -31,11 +31,10 @@ class AddressService (
         }
     }
 
-    fun update(id: Long, addressRequestDto: AddressRequestDto): AddressResponseDto {
+    fun update(id: Long, userId: String, addressRequestDto: AddressRequestDto): AddressResponseDto {
         if(!addressRepository.existsById(id)) throw AddressDoesNotExistException()
-        val addressEntity = addressMapper.toEntity(addressRequestDto).apply { this.id = id }
-        addressRepository.save(addressEntity)
-        return addressMapper.fromEntity(addressMapper.toEntity(id, addressRequestDto))
+        val addressEntity = addressMapper.toEntity(userId, addressRequestDto).apply { this.id = id }
+        return addressMapper.fromEntity(addressRepository.save(addressEntity))
     }
 
     fun delete(id: Long) {

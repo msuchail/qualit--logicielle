@@ -1,0 +1,19 @@
+meta {
+  name: List authenticated user addresse's
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8080/api/v1/addresses/
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token_set_by_collection_script}}
+}
+
+vars:pre-request {
+  user_id: USERID
+}

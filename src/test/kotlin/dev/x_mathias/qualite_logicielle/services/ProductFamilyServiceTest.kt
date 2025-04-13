@@ -8,26 +8,20 @@ import dev.x_mathias.qualite_logicielle.exceptions.ProductFamilyDoesNotExists
 import dev.x_mathias.qualite_logicielle.repositories.ProductFamilyRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
-import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestMethodOrder
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.junit.jupiter.Container
-import org.testcontainers.junit.jupiter.Testcontainers
 
-@SpringBootTest
-@Testcontainers
-@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-class ProductFamilyServiceTest {
+
+class ProductFamilyServiceTest: AbstractServiceTestClass() {
     companion object {
         @Container
         @ServiceConnection
         @JvmStatic
-        val mysql = MySQLContainer("mysql:5.7")
+        val mysql = MySQLContainer("mysql:8.0")
     }
 
     @Autowired

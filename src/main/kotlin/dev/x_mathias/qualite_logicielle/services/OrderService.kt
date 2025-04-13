@@ -14,15 +14,17 @@ import java.util.*
 class OrderService(
     private val orderRepository: OrderRepository,
     private val orderMapper: OrderMapper,
-    private val productService: ProductService
+    private val productService: ProductService,
+    private val addressService: AddressService
 ) {
     @Transactional
-    fun create(orderRequestDto: OrderRequestDto): OrderResponseSimplifiedDto {
+    fun create(userId: String, orderRequestDto: OrderRequestDto): OrderResponseSimplifiedDto {
         orderRequestDto.products.forEach {
             productService.decrementStock(it.key, it.value)
         }
         val orderDocument = orderRepository.save(
             orderMapper.toDocument(
+                userId,
                 orderRequestDto
             )
         )
@@ -36,11 +38,6 @@ class OrderService(
     }
     fun findByUserId(userId: String): List<OrderResponseSimplifiedDto> {
         return orderRepository.findByUserId(userId).map {
-            orderMapper.fromDocumentToSimplifiedResponseDto(it)
-        }
-    }
-    fun findAll(): List<OrderResponseSimplifiedDto> {
-        return orderRepository.findAll().map {
             orderMapper.fromDocumentToSimplifiedResponseDto(it)
         }
     }

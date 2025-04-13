@@ -7,7 +7,11 @@ meta {
 put {
   url: http://localhost:8080/api/v1/product-families/{{family_id}}
   body: json
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token_set_by_collection_script}}
 }
 
 body:json {

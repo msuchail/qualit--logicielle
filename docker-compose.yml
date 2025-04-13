@@ -1,6 +1,6 @@
 services:
   mysql-keycloack:
-    image: mysql:5.7
+    image: mysql:8.0
     networks:
       - default
     ports:
@@ -12,9 +12,10 @@ services:
       - MYSQL_ROOT_PASSWORD=password
     volumes:
       - .docker/mysql-keycloack-data:/var/lib/mysql
+      - .docker/keycloack-init.sql:/docker-entrypoint-initdb.d/keycloack-init.sql
 
   mysql-app:
-    image: mysql:5.7
+    image: mysql:8.0
     networks:
       - default
     ports:
@@ -34,8 +35,7 @@ services:
     ports:
       - "8000:8080"
     depends_on:
-      mysql-keycloack:
-        condition: service_started
+      - mysql-keycloack
     entrypoint: "/opt/keycloak/bin/kc.sh start-dev"
     environment:
       - KC_BOOTSTRAP_ADMIN_PASSWORD=password
@@ -44,6 +44,7 @@ services:
       - KC_DB_USERNAME=username
       - KC_DB_PASSWORD=password
       - KC_DB_URL=jdbc:mysql://mysql-keycloack:3306/database
+
   mongodb:
     image: mongo:7.0
     networks:
@@ -57,5 +58,7 @@ services:
     volumes:
       - .docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
       - .docker/mongo-app-data:/data/db
+
+
 networks:
   default:

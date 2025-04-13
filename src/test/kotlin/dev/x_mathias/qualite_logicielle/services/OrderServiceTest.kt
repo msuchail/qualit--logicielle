@@ -5,32 +5,25 @@ import dev.x_mathias.qualite_logicielle.exceptions.AddressDoesNotExistException
 import dev.x_mathias.qualite_logicielle.exceptions.OrderDoesNotExistException
 import dev.x_mathias.qualite_logicielle.exceptions.ProductDoesNotExistsException
 import dev.x_mathias.qualite_logicielle.exceptions.ProductNotEnoughStockException
-import jakarta.annotation.PreDestroy
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
-import org.junit.jupiter.api.MethodOrderer
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Order
-import org.junit.jupiter.api.TestMethodOrder
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 import org.testcontainers.containers.MongoDBContainer
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.junit.jupiter.Container
-import org.testcontainers.junit.jupiter.Testcontainers
 import java.util.*
 import kotlin.test.Test
 
 
-@SpringBootTest
-@Testcontainers
-@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-class OrderServiceTest {
+class OrderServiceTest : AbstractServiceTestClass() {
     companion object {
         @Container
         @ServiceConnection
         @JvmStatic
-        val mySqlContainer = MySQLContainer("mysql:5.7")
+        val mySqlContainer = MySQLContainer("mysql:8.0")
 
         @Container
         @ServiceConnection
@@ -53,31 +46,36 @@ class OrderServiceTest {
     @Autowired
     private lateinit var orderMapper: OrderMapper
 
-    private val shippingAddress = AddressRequestDto(
-        userId = "USERID",
-        streetNumber = 12,
-        streetName = "Rue du Pilat",
-        city = "Saint Petersburg",
-        state = "FR",
-        zipCode = "12324",
-        country = "France"
-    )
-    private val invoiceAddress = AddressRequestDto(
-        userId = "USERID",
-        streetNumber = 12,
-        streetName = "Rue du Pilat",
-        city = "Lyon",
-        state = "FR",
-        zipCode = "12324",
-        country = "France"
-    )
 
-
-    @Test
-    @Order(0)
-    fun preconditions() {
-        addressService.create(invoiceAddress).id
-        addressService.create(shippingAddress).id
+    @BeforeAll
+    fun beforeAll() {
+        val shippingAddress = AddressRequestDto(
+            streetNumber = 12,
+            streetName = "Rue du Pilat",
+            city = "Saint Petersburg",
+            state = "FR",
+            zipCode = "12324",
+            country = "France"
+        )
+        val invoiceAddress = AddressRequestDto(
+            streetNumber = 12,
+            streetName = "Rue du Pilat",
+            city = "Lyon",
+            state = "FR",
+            zipCode = "12324",
+            country = "France"
+        )
+        val randomAddress = AddressRequestDto(
+            streetNumber = 12,
+            streetName = "Rue du Pilat",
+            city = "Random",
+            state = "FR",
+            zipCode = "12324",
+            country = "France"
+        )
+        addressService.create("USERID", invoiceAddress)
+        addressService.create("USERID", shippingAddress)
+        addressService.create("RANDOM-USER", randomAddress)
 
         productFamilyService.create(
             ProductFamilyRequestDto(
@@ -97,14 +95,16 @@ class OrderServiceTest {
         )
     }
 
+
+
     @Test
     @Order(1)
     fun testOrderCreate() {
         orderService.create(
+            userId = "USERID",
             orderRequestDto = OrderRequestDto(
                 invoiceAddressId = 1,
                 shippingAddressId = 2,
-                userId = "USERID",
                 products = mapOf(
                     "FIGLOL" to 1u
                 )
@@ -117,10 +117,10 @@ class OrderServiceTest {
     fun testOrderCreateFailWithBadProduct() {
         assertThatExceptionOfType(ProductDoesNotExistsException::class.java).isThrownBy {
             orderService.create(
+                userId = "USERID",
                 orderRequestDto = OrderRequestDto(
                     invoiceAddressId = 1,
                     shippingAddressId = 2,
-                    userId = "USERID",
                     products = mapOf(
                         "FIGLOL" to 1u,
                         "TOTO" to 1u
@@ -135,32 +135,66 @@ class OrderServiceTest {
     fun testOrderCreateFailWithoutProduct() {
         assertThatExceptionOfType(IllegalArgumentException::class.java).isThrownBy {
             orderService.create(
+                userId = "USERID",
                 orderRequestDto = OrderRequestDto(
                     invoiceAddressId = 1,
                     shippingAddressId = 2,
-                    userId = "USERID",
                     products = mapOf()
                 )
             )
         }
     }
 
-
     @Test
     @Order(4)
+    fun testOrderCrateFailWithInvoiceAddressThatDoesNotBelongToTheUser() {
+        assertThatExceptionOfType(AddressDoesNotExistException::class.java).isThrownBy {
+            orderService.create(
+                userId = "USERID",
+                orderRequestDto = OrderRequestDto(
+                    invoiceAddressId = 3,
+                    shippingAddressId = 2,
+                    products = mapOf(
+                        "FIGLOL" to 1u
+                    )
+                )
+            )
+        }
+    }
+
+    @Test
+    @Order(5)
+    fun testOrderCrateFailWithShippingAddressThatDoesNotBelongToTheUser() {
+        assertThatExceptionOfType(AddressDoesNotExistException::class.java).isThrownBy {
+            orderService.create(
+                userId = "USERID",
+                orderRequestDto = OrderRequestDto(
+                    invoiceAddressId = 1,
+                    shippingAddressId = 3,
+                    products = mapOf(
+                        "FIGLOL" to 1u
+                    )
+                )
+            )
+        }
+    }
+
+
+    @Test
+    @Order(6)
     fun testStockUpdated() {
         assertThat(productService.findById("FIGLOL").stock).isEqualTo(10u)
     }
 
     @Test
-    @Order(5)
+    @Order(7)
     fun testOrderCreateWithInexistingProduct() {
         assertThatExceptionOfType(ProductDoesNotExistsException::class.java).isThrownBy {
             orderService.create(
+                userId = "USERID",
                 orderRequestDto = OrderRequestDto(
                     invoiceAddressId = 1,
                     shippingAddressId = 2,
-                    userId = "USERID",
                     products = mapOf(
                         "TOTO" to 1u
                     )
@@ -170,14 +204,14 @@ class OrderServiceTest {
     }
 
     @Test
-    @Order(6)
+    @Order(8)
     fun testOrderCreateWithInexistingAddress() {
         assertThatExceptionOfType(AddressDoesNotExistException::class.java).isThrownBy {
             orderService.create(
+                userId = "USERID",
                 orderRequestDto = OrderRequestDto(
                     invoiceAddressId = 1,
                     shippingAddressId = 3,
-                    userId = "USERID",
                     products = mapOf(
                         "FIGLOL" to 1u
                     )
@@ -186,10 +220,10 @@ class OrderServiceTest {
         }
         assertThatExceptionOfType(AddressDoesNotExistException::class.java).isThrownBy {
             orderService.create(
+                userId = "USERID",
                 orderRequestDto = OrderRequestDto(
                     invoiceAddressId = 3,
                     shippingAddressId = 1,
-                    userId = "USERID",
                     products = mapOf(
                         "FIGLOL" to 1u
                     )
@@ -199,29 +233,29 @@ class OrderServiceTest {
     }
 
     @Test
-    @Order(7)
+    @Order(9)
     fun testOrderFindAll() {
-        val result = orderService.findAll()
+        val result = orderService.findByUserId("USERID")
         assertThat(result).hasSize(1)
     }
 
     @Test
-    @Order(8)
+    @Order(10)
     fun testOrderFindById() {
-        val id = orderService.findAll().first().id
+        val id = orderService.findByUserId("USERID").first().id
         val result = orderService.findById(id)
         assertThat(result.userId).isEqualTo("USERID")
     }
 
     @Test
-    @Order(9)
+    @Order(11)
     fun testThatOrderDocumentMapperThrowExceptionIfProductDoesNotExists() {
         assertThatExceptionOfType(ProductDoesNotExistsException::class.java).isThrownBy {
             orderMapper.toDocument(
+                userId = "USERID",
                 OrderRequestDto(
                     invoiceAddressId = 1,
                     shippingAddressId = 2,
-                    userId = "USERID",
                     products = mapOf(
                         "TOTO" to 1u
                     )
@@ -231,7 +265,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @Order(10)
+    @Order(12)
     fun testTransactionalAspectOfStockOrder() {
         productService.create(
             ProductRequestDto(
@@ -245,10 +279,10 @@ class OrderServiceTest {
         )
         assertThatExceptionOfType(ProductNotEnoughStockException::class.java).isThrownBy {
             orderService.create(
+                userId = "USERID",
                 OrderRequestDto(
                     invoiceAddressId = 1,
                     shippingAddressId = 2,
-                    userId = "USERID",
                     products = mapOf(
                         "FIGLOL" to 1u,
                         "FIGMAR" to 2u
@@ -260,7 +294,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @Order(11)
+    @Order(13)
     fun testOrderFindByIFailWithBadId() {
         assertThatExceptionOfType(OrderDoesNotExistException::class.java).isThrownBy {
             orderService.findById(UUID.randomUUID())
@@ -269,28 +303,17 @@ class OrderServiceTest {
     }
 
     @Test
-    @Order(12)
+    @Order(14)
     fun testOderFindByUserId() {
-        orderService.create(
-            OrderRequestDto(
-                invoiceAddressId = 1,
-                shippingAddressId = 2,
-                userId = "USERID2",
-                products = mapOf(
-                    "FIGLOL" to 1u,
-                    "FIGMAR" to 1u
-                )
-            )
-        )
-        assertThat(orderService.findByUserId("USERID2")).hasSize(1)
+        assertThat(orderService.findByUserId("USERID")).hasSize(1)
     }
 
     @Test
-    @Order(13)
+    @Order(15)
     fun testOrderDetailsStillAvailableAfterProductAndAddressDelete() {
         addressService.delete(1)
         addressService.delete(2)
-        val orderId = orderService.findAll().first().id
+        val orderId = orderService.findByUserId("USERID").first().id
         productService.delete("FIGLOL")
         val result = orderService.findById(orderId)
         assertThat(result.products.first().name).isEqualTo("Figurine LOL")
@@ -299,21 +322,16 @@ class OrderServiceTest {
     }
 
     @Test
-    @Order(14)
+    @Order(16)
     fun testOrderDelete() {
-        orderService.delete(orderService.findAll().first().id)
+        orderService.delete(orderService.findByUserId("USERID").first().id)
     }
 
     @Test
-    @Order(15)
+    @Order(17)
     fun testOrderDeleteFailWhenBadId() {
         assertThatExceptionOfType(OrderDoesNotExistException::class.java).isThrownBy {
             orderService.delete(UUID.randomUUID())
         }
-    }
-
-    @PreDestroy
-    fun preDestroy() {
-        productFamilyService.delete("FIG")
     }
 }

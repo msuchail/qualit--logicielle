@@ -1,0 +1,19 @@
+auth {
+  mode: oauth2
+}
+
+auth:oauth2 {
+  grant_type: password
+  access_token_url: http://localhost:8000/realms/qualite-logicielle/protocol/openid-connect/token
+  username: margot
+  password: password
+  client_id: API
+  client_secret: 
+  scope: 
+}
+
+script:post-response {
+  if(req.getAuthMode() == 'oauth2' && res.body.access_token) {
+      bru.setVar('access_token_set_by_collection_script', res.body.access_token);
+  }
+}

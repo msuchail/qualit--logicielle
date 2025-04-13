@@ -9,7 +9,6 @@ class AddressRequestDtoTest {
     @Test
     fun `valid address should pass validation`() {
         val validAddress = AddressRequestDto(
-            userId = "user123",
             streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
             streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
             city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -25,7 +24,6 @@ class AddressRequestDtoTest {
     fun `streetNumber should be in valid range`() {
         assertThrows(IllegalArgumentException::class.java) {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = 0,
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -37,7 +35,6 @@ class AddressRequestDtoTest {
 
         assertThrows(IllegalArgumentException::class.java) {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER + 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -53,7 +50,6 @@ class AddressRequestDtoTest {
     fun `streetName length should be within limits`() {
         assertThrows(IllegalArgumentException::class.java) {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MIN_LENGTH -1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -65,7 +61,6 @@ class AddressRequestDtoTest {
 
         assertDoesNotThrow {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MIN_LENGTH),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -77,7 +72,6 @@ class AddressRequestDtoTest {
 
         assertDoesNotThrow {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -89,7 +83,6 @@ class AddressRequestDtoTest {
 
         assertThrows(IllegalArgumentException::class.java) {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = 10,
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH + 1), // Invalid - Above maximum length
                 city = "Springfield",
@@ -106,7 +99,6 @@ class AddressRequestDtoTest {
     fun `city length should be within limits`() {
         assertThrows(IllegalArgumentException::class.java) {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MIN_LENGTH - 1),
@@ -118,7 +110,6 @@ class AddressRequestDtoTest {
 
         assertDoesNotThrow {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MIN_LENGTH),
@@ -130,7 +121,6 @@ class AddressRequestDtoTest {
 
         assertDoesNotThrow {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH),
@@ -142,7 +132,6 @@ class AddressRequestDtoTest {
 
         assertThrows(IllegalArgumentException::class.java) {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH + 1),
@@ -157,7 +146,6 @@ class AddressRequestDtoTest {
     fun `city name should only contain valid characters`() {
         assertThrows(IllegalArgumentException::class.java) {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 2) + "1",
@@ -173,7 +161,6 @@ class AddressRequestDtoTest {
     fun `state length should be within limits`() {
         assertThrows(IllegalArgumentException::class.java) {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -185,7 +172,6 @@ class AddressRequestDtoTest {
 
         assertDoesNotThrow {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -197,7 +183,6 @@ class AddressRequestDtoTest {
 
         assertDoesNotThrow {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -209,7 +194,6 @@ class AddressRequestDtoTest {
 
         assertThrows(IllegalArgumentException::class.java) {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -224,7 +208,6 @@ class AddressRequestDtoTest {
     fun `state name should only contain valid characters`() {
         assertThrows(IllegalArgumentException::class.java) {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -240,7 +223,6 @@ class AddressRequestDtoTest {
     fun `country length should be within limits`() {
         assertThrows(IllegalArgumentException::class.java) {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -252,7 +234,6 @@ class AddressRequestDtoTest {
 
         assertDoesNotThrow {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -264,7 +245,6 @@ class AddressRequestDtoTest {
 
         assertDoesNotThrow {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -276,7 +256,6 @@ class AddressRequestDtoTest {
 
         assertThrows(IllegalArgumentException::class.java) {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -291,7 +270,6 @@ class AddressRequestDtoTest {
     fun `country name should only contain valid characters`() {
         assertThrows(IllegalArgumentException::class.java) {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -306,7 +284,6 @@ class AddressRequestDtoTest {
     fun `zipcode length should be within limits`() {
         assertThrows(IllegalArgumentException::class.java) {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -317,7 +294,6 @@ class AddressRequestDtoTest {
         }
         assertThrows(IllegalArgumentException::class.java) {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -333,7 +309,6 @@ class AddressRequestDtoTest {
     fun `zipCode should contain only digits`() {
         assertThrows(IllegalArgumentException::class.java) {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),
@@ -345,7 +320,6 @@ class AddressRequestDtoTest {
 
         assertThrows(IllegalArgumentException::class.java) {
             AddressRequestDto(
-                userId = "user123",
                 streetNumber = (STREET_NUMBER_MAX_NUMBER - 1).toShort(),
                 streetName = "A".repeat(STREET_NAME_MAX_LENGTH - 1),
                 city = "A".repeat(CITY_NAME_MAX_LENGTH - 1),

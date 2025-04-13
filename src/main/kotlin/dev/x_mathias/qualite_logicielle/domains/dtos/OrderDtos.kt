@@ -1,6 +1,7 @@
 package dev.x_mathias.qualite_logicielle.domains.dtos
 
 import dev.x_mathias.qualite_logicielle.domains.entities.OrderDocument
+import dev.x_mathias.qualite_logicielle.exceptions.AddressDoesNotExistException
 import dev.x_mathias.qualite_logicielle.exceptions.ProductDoesNotExistsException
 import dev.x_mathias.qualite_logicielle.repositories.ProductRepository
 import dev.x_mathias.qualite_logicielle.services.AddressService
@@ -14,10 +15,14 @@ class OrderMapper(
     private val productMapper: ProductMapper,
     private val productRepository: ProductRepository,
 ) {
-    fun toDocument(orderRequestDto: OrderRequestDto) = OrderDocument(
-        invoiceAddress = addressService.findById(orderRequestDto.invoiceAddressId),
-        shippingAddress = addressService.findById(orderRequestDto.shippingAddressId),
-        userId = orderRequestDto.userId,
+    fun toDocument(userId: String, orderRequestDto: OrderRequestDto) = OrderDocument(
+        invoiceAddress = addressService.findById(orderRequestDto.invoiceAddressId).also {
+            if(it.userId != userId) throw AddressDoesNotExistException()
+        },
+        shippingAddress = addressService.findById(orderRequestDto.shippingAddressId).also {
+            if(it.userId != userId) throw AddressDoesNotExistException()
+        },
+        userId = userId,
         products = orderRequestDto.products.map {
             productMapper.fromEntityToSimplifiedResponseDto(
                 productRepository.findById(it.key).orElseThrow {
@@ -52,7 +57,6 @@ class OrderMapper(
 data class OrderRequestDto (
     val invoiceAddressId: Long,
     val shippingAddressId: Long,
-    var userId: String,
     var products: Map<String, UInt>,
 ) {
     init {
