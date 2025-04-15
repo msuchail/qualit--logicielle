@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: http://localhost:8080/api/v1/products/
+  url: {{BASE_URL}}/products/
   body: json
   auth: bearer
 }
@@ -16,11 +16,17 @@ auth:bearer {
 
 body:json {
   {
-    "id": "FIGLOL",
+    "id": "{{productId}}",
     "name": "Figurine LOL",
     "purchasePrice": 700,
     "sellingPrice": 2000,
     "stock": 10,
     "productFamilyId": "FIG" 
+  }
+}
+
+script:post-response {
+  if(res.body.id) {
+    bru.setVar('productId', res.body.id)
   }
 }

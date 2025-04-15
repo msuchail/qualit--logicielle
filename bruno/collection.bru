@@ -4,12 +4,19 @@ auth {
 
 auth:oauth2 {
   grant_type: password
-  access_token_url: http://localhost:8000/realms/qualite-logicielle/protocol/openid-connect/token
-  username: margot
+  access_token_url: {{KEYCLOACK_URL}}
+  username: leonardo
   password: password
   client_id: API
   client_secret: 
   scope: 
+}
+
+vars:pre-request {
+  productFamilyId: FIG
+  productId: FIGLOL
+  addressId: 1
+  orderId: 
 }
 
 script:post-response {

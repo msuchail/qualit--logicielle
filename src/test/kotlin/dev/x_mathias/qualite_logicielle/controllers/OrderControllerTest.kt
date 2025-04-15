@@ -145,8 +145,8 @@ class OrderControllerTest: AbstractControllerTestClass() {
             )
         }.andExpectAll {
             status { isCreated() }
-            jsonPath("$.products", hasSize<Int>(1))
-            jsonPath("$.products[0]", equalTo("FIGLOL"))
+            jsonPath("$.order.products", hasSize<Int>(1))
+            jsonPath("$.order.products[0].productId", equalTo("FIGLOL"))
         }
     }
 
@@ -167,8 +167,8 @@ class OrderControllerTest: AbstractControllerTestClass() {
             )
         }.andExpectAll {
             status { isCreated() }
-            jsonPath("$.products", hasSize<Int>(1))
-            jsonPath("$.products[0]", equalTo("FIGMAR"))
+            jsonPath("$.order.products", hasSize<Int>(1))
+            jsonPath("$.order.products[0].productId", equalTo("FIGMAR"))
         }
     }
 

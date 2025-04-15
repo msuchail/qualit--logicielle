@@ -5,7 +5,7 @@ meta {
 }
 
 put {
-  url: http://localhost:8080/api/v1/products/{{product_id}}/increment-stock={{quantity}}
+  url: {{BASE_URL}}/products/{{productId}}/increment-stock={{quantity}}
   body: json
   auth: bearer
 }
@@ -19,6 +19,5 @@ body:json {
 }
 
 vars:pre-request {
-  product_id: FIGLOL
   quantity: 5
 }

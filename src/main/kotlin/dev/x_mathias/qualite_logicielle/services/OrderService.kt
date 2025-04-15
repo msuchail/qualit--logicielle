@@ -15,10 +15,10 @@ class OrderService(
     private val orderRepository: OrderRepository,
     private val orderMapper: OrderMapper,
     private val productService: ProductService,
-    private val addressService: AddressService
+    private val stripeService: StripeService
 ) {
     @Transactional
-    fun create(userId: String, orderRequestDto: OrderRequestDto): OrderResponseSimplifiedDto {
+    fun create(userId: String, orderRequestDto: OrderRequestDto): Map<String, Any> {
         orderRequestDto.products.forEach {
             productService.decrementStock(it.key, it.value)
         }
@@ -28,7 +28,10 @@ class OrderService(
                 orderRequestDto
             )
         )
-        return orderMapper.fromDocumentToSimplifiedResponseDto(orderDocument)
+        return mapOf(
+            "payment-url" to stripeService.createCheckoutSession(orderDocument),
+            "order" to orderMapper.fromDocumentToSimplifiedResponseDto(orderDocument)
+        )
     }
     fun findById(orderId: UUID): OrderResponseDto {
         val orderDocument = orderRepository.findById(orderId).orElseThrow {

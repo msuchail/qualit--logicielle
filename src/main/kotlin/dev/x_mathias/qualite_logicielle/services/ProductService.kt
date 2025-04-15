@@ -32,25 +32,25 @@ class ProductService(
             productMapper.fromEntityToSimplifiedResponseDto(it)
         }
 
-    fun decrementStock(id: String, value: UInt): ProductSimplifiedResponseDto {
+    fun decrementStock(id: String, value: UInt): ProductResponseDto {
         val productEntity = productRepository.findById(id).orElseThrow { ProductDoesNotExistsException() }
         if(productEntity.stock < value) throw ProductNotEnoughStockException()
         productEntity.stock -= value
-        return productMapper.fromEntityToSimplifiedResponseDto(productRepository.save(productEntity))
+        return productMapper.fromEntity(productRepository.save(productEntity))
     }
-    fun incrementStock(id: String, value: UInt) : ProductSimplifiedResponseDto {
+    fun incrementStock(id: String, value: UInt) : ProductResponseDto {
         val productEntity = productRepository.findById(id).orElseThrow { ProductDoesNotExistsException() }
         productEntity.stock += value
-        return productMapper.fromEntityToSimplifiedResponseDto(productRepository.save(productEntity))
+        return productMapper.fromEntity(productRepository.save(productEntity))
     }
-    fun setStock(id: String, stock: UInt) : ProductSimplifiedResponseDto {
+    fun setStock(id: String, stock: UInt) : ProductResponseDto {
         val productEntity = productRepository.findById(id).orElseThrow { ProductDoesNotExistsException() }
         productEntity.stock = stock
-        return productMapper.fromEntityToSimplifiedResponseDto(productRepository.save(productEntity))
+        return productMapper.fromEntity(productRepository.save(productEntity))
     }
-    fun update(id: String, productRequestWithoutIdDto: ProductRequestWithoutIdDto): ProductSimplifiedResponseDto {
+    fun update(id: String, productRequestWithoutIdDto: ProductRequestWithoutIdDto): ProductResponseDto {
         val productEntity = productMapper.toEntity(id, productRequestWithoutIdDto)
-        return productMapper.fromEntityToSimplifiedResponseDto(productRepository.save(productEntity))
+        return productMapper.fromEntity(productRepository.save(productEntity))
     }
     fun delete(id: String) {
         if (!productRepository.existsById(id)) throw ProductDoesNotExistsException()

@@ -5,6 +5,7 @@ import dev.x_mathias.qualite_logicielle.domains.dtos.OrderResponseDto
 import dev.x_mathias.qualite_logicielle.domains.dtos.OrderResponseSimplifiedDto
 import dev.x_mathias.qualite_logicielle.exceptions.AuthorizationDeniedException
 import dev.x_mathias.qualite_logicielle.services.OrderService
+import dev.x_mathias.qualite_logicielle.services.StripeService
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
@@ -13,14 +14,28 @@ import java.util.*
 
 @RestController
 @RequestMapping("/api/v1/orders")
-class OrderController(private val orderService: OrderService) {
+@PreAuthorize("permitAll()")
+class OrderController(
+    private val orderService: OrderService,
+    private val stripeService: StripeService
+) {
+    @PostMapping("/webhooks")
+    @PreAuthorize("permitAll()")
+    @ResponseStatus(HttpStatus.OK)
+    fun webHook(
+        @RequestBody requestPayload: String,
+        @RequestHeader("Stripe-Signature") requestSignature: String
+    ) {
+        stripeService.manageWebHook(requestPayload, requestSignature)
+    }
+
     @PostMapping("/")
     @PreAuthorize("hasRole('CUSTOMMER')")
     @ResponseStatus(HttpStatus.CREATED)
     fun placeOrder(
         @RequestBody orderRequestDto: OrderRequestDto,
         jwtAuthenticationToken: JwtAuthenticationToken
-    ): OrderResponseSimplifiedDto =
+    ): Map<String, Any> =
         orderService.create(jwtAuthenticationToken.token.subject, orderRequestDto)
 
     @GetMapping("/")

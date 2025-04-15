@@ -1,22 +1,22 @@
 services:
-  app:
-    build:
-      dockerfile: .docker/Dockerfile
-      context: .
-      target: dev
-    volumes:
-      - .:/app
-    networks:
-      - default
-    environment:
-      - SPRING_DATA_MONGODB_HOST=mongodb
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-app:3306/database
-    depends_on:
-      - mysql-keycloack
-      - mysql-app
-      - mongodb
-    ports:
-      - "8080:8080"
+#  app:
+#    build:
+#      dockerfile: .docker/Dockerfile
+#      context: .
+#      target: dev
+#    volumes:
+#      - .:/app
+#    networks:
+#      - default
+#    environment:
+#      - SPRING_DATA_MONGODB_HOST=mongodb
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-app:3306/database
+#    depends_on:
+#      - mysql-keycloack
+#      - mysql-app
+#      - mongodb
+#    ports:
+#      - "8080:8080"
 
   mysql-keycloack:
     image: mysql:8.0
@@ -30,7 +30,6 @@ services:
       - MYSQL_DATABASE=database
       - MYSQL_ROOT_PASSWORD=password
     volumes:
-      - .docker/mysql-keycloack-data:/var/lib/mysql
       - .docker/keycloack-init.sql:/docker-entrypoint-initdb.d/keycloack-init.sql
 
   mysql-app:
@@ -44,8 +43,6 @@ services:
       - MYSQL_PASSWORD=password
       - MYSQL_DATABASE=database
       - MYSQL_ROOT_PASSWORD=password
-    volumes:
-      - .docker/mysql-app-data:/var/lib/mysql
 
   keycloack:
     image: quay.io/keycloak/keycloak:26.1.4
@@ -76,7 +73,6 @@ services:
       - MONGO_INITDB_DATABASE=database
     volumes:
       - .docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-      - .docker/mongo-app-data:/data/db
 
 
 networks:

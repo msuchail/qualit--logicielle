@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: http://localhost:8080/api/v1/addresses/
+  url: {{BASE_URL}}/addresses/
   body: json
   auth: bearer
 }
@@ -22,5 +22,11 @@ body:json {
     "state": "FR",
     "zipCode": "69000",
     "country": "France"
+  }
+}
+
+script:post-response {
+  if(res.id) {
+    bru.setVar("addressId",res.id)
   }
 }

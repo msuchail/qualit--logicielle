@@ -12,8 +12,6 @@ import org.springframework.security.web.SecurityFilterChain
 import java.util.*
 
 
-const val baseUri = "/api/v1"
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -24,6 +22,11 @@ class SecurityConfig {
         http: HttpSecurity,
     ): SecurityFilterChain {
         http {
+            csrf {
+                ignoringRequestMatchers(
+                    "/api/v1/orders/webhooks",
+                )
+            }
             oauth2ResourceServer {
                 jwt {
                     jwtAuthenticationConverter = JwtAuthenticationConverter().apply {

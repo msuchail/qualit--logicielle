@@ -5,7 +5,7 @@ meta {
 }
 
 put {
-  url: http://localhost:8080/api/v1/product-families/{{family_id}}
+  url: {{BASE_URL}}/product-families/{{productFamilyId}}
   body: json
   auth: bearer
 }
@@ -18,8 +18,4 @@ body:json {
   {
     "name": "Figurines en plastique"
   }
-}
-
-vars:pre-request {
-  family_id: FIG
 }

@@ -59,7 +59,6 @@ class ProductMapper(
         name = productEntity.name,
         purchasePrice = productEntity.purchasePrice,
         sellingPrice = productEntity.sellingPrice,
-        stock = productEntity.stock,
         productFamily = productEntity.productFamily.id,
     )
 
@@ -114,6 +113,5 @@ data class ProductSimplifiedResponseDto(
     val name: String,
     val purchasePrice: UInt,
     val sellingPrice: UInt,
-    val stock: UInt,
     val productFamily: String,
 )

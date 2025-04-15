@@ -87,8 +87,8 @@ class OrderServiceTest : AbstractServiceTestClass() {
             ProductRequestDto(
                 id = "FIGLOL",
                 name = "Figurine LOL",
-                purchasePrice = 10u,
-                sellingPrice = 20u,
+                purchasePrice = 1000u,
+                sellingPrice = 2000u,
                 stock = 11u,
                 productFamilyId = "FIG",
             )
@@ -316,7 +316,7 @@ class OrderServiceTest : AbstractServiceTestClass() {
         val orderId = orderService.findByUserId("USERID").first().id
         productService.delete("FIGLOL")
         val result = orderService.findById(orderId)
-        assertThat(result.products.first().name).isEqualTo("Figurine LOL")
+        assertThat(result.products.first().product.name).isEqualTo("Figurine LOL")
         assertThat(result.invoiceAddress.city).isEqualTo("Lyon")
         assertThat(result.shippingAddress.city).isEqualTo("Saint Petersburg")
     }

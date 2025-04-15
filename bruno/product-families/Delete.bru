@@ -5,15 +5,11 @@ meta {
 }
 
 delete {
-  url: http://localhost:8080/api/v1/product-families/{{family_id}}
+  url: {{BASE_URL}}/product-families/{{productFamilyId}}
   body: none
   auth: bearer
 }
 
 auth:bearer {
   token: {{access_token_set_by_collection_script}}
-}
-
-vars:pre-request {
-  family_id: FIG
 }

@@ -12,8 +12,8 @@ import java.util.*
 @Component
 class OrderMapper(
     private val addressService: AddressService,
-    private val productMapper: ProductMapper,
     private val productRepository: ProductRepository,
+    private val productMapper: ProductMapper
 ) {
     fun toDocument(userId: String, orderRequestDto: OrderRequestDto) = OrderDocument(
         invoiceAddress = addressService.findById(orderRequestDto.invoiceAddressId).also {
@@ -23,11 +23,12 @@ class OrderMapper(
             if(it.userId != userId) throw AddressDoesNotExistException()
         },
         userId = userId,
-        products = orderRequestDto.products.map {
-            productMapper.fromEntityToSimplifiedResponseDto(
-                productRepository.findById(it.key).orElseThrow {
-                    ProductDoesNotExistsException()
-                }
+        products = orderRequestDto.products.map { product ->
+            ProductInOrderDto(
+                product = productRepository.findById(product.key)
+                    .orElseThrow { throw ProductDoesNotExistsException() }
+                    .let { productMapper.fromEntityToSimplifiedResponseDto(it) },
+                quantity = product.value,
             )
         }
     )
@@ -35,6 +36,8 @@ class OrderMapper(
     fun fromDocument(orderDocument: OrderDocument) : OrderResponseDto {
         return OrderResponseDto(
             id = orderDocument.id,
+            status = orderDocument.status,
+            type = orderDocument.type,
             createdAt = orderDocument.createdAt,
             invoiceAddress = orderDocument.invoiceAddress,
             shippingAddress = orderDocument.shippingAddress,
@@ -45,16 +48,25 @@ class OrderMapper(
     fun fromDocumentToSimplifiedResponseDto(orderDocument: OrderDocument) : OrderResponseSimplifiedDto {
         return OrderResponseSimplifiedDto(
             id = orderDocument.id,
+            status = orderDocument.status,
+            type = orderDocument.type,
             createdAt = orderDocument.createdAt,
             invoiceAddress = orderDocument.invoiceAddress.id,
             shippingAddress = orderDocument.shippingAddress.id,
             userId = orderDocument.userId,
-            products = orderDocument.products.map { it.id }
+            products = orderDocument.products.map {
+                ProductIdInOrderDto(
+                    productId = it.product.id,
+                    quantity = it.quantity,
+                )
+            }
         )
     }
 }
 
 data class OrderRequestDto (
+    val status: OrderStatus = OrderStatus.WAITING_FOR_PAYMENT,
+    val type: OrderType = OrderType.ONLINE,
     val invoiceAddressId: Long,
     val shippingAddressId: Long,
     var products: Map<String, UInt>,
@@ -68,18 +80,44 @@ data class OrderRequestDto (
 
 data class OrderResponseDto(
     val id: UUID,
+    val status: OrderStatus,
+    val type: OrderType,
     val createdAt: LocalDateTime,
     val invoiceAddress: AddressResponseDto,
     val shippingAddress: AddressResponseDto,
     var userId: String,
-    val products: List<ProductSimplifiedResponseDto>,
+    val products: List<ProductInOrderDto>,
 )
 
 data class OrderResponseSimplifiedDto(
     val id: UUID,
+    val status: OrderStatus,
+    val type: OrderType,
     val createdAt: LocalDateTime,
     val invoiceAddress: Long,
     val shippingAddress: Long,
     var userId: String,
-    val products: List<String>
+    val products: List<ProductIdInOrderDto>
 )
+
+data class ProductInOrderDto(
+    val quantity: UInt,
+    val product: ProductSimplifiedResponseDto
+)
+
+data class ProductIdInOrderDto(
+    val quantity: UInt,
+    val productId: String
+)
+
+enum class OrderStatus {
+    WAITING_FOR_PAYMENT,
+    PENDING,
+    PREPARATION,
+    READY_FOR_DELIVERY,
+    SHIPPED,
+}
+enum class OrderType {
+    ONLINE,
+    PHYSICAL,
+}

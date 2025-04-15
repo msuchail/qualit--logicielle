@@ -5,7 +5,7 @@ meta {
 }
 
 put {
-  url: http://localhost:8080/api/v1/addresses/{{address_id}}
+  url: {{BASE_URL}}/addresses/{{addressId}}
   body: json
   auth: bearer
 }
@@ -23,8 +23,4 @@ body:json {
     "zipCode": "69000",
     "country": "France"
   }
-}
-
-vars:pre-request {
-  address_id: 1
 }
