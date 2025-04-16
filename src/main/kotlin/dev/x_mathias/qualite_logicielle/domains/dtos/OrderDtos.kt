@@ -113,6 +113,7 @@ data class ProductIdInOrderDto(
 enum class OrderStatus {
     WAITING_FOR_PAYMENT,
     PENDING,
+    CANCELED,
     PREPARATION,
     READY_FOR_DELIVERY,
     SHIPPED,

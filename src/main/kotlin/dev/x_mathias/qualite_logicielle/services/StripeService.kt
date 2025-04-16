@@ -12,9 +12,13 @@ import dev.x_mathias.qualite_logicielle.config.StripeConfig
 import dev.x_mathias.qualite_logicielle.domains.dtos.OrderStatus
 import dev.x_mathias.qualite_logicielle.domains.entities.OrderDocument
 import dev.x_mathias.qualite_logicielle.exceptions.OrderDoesNotExistException
+import dev.x_mathias.qualite_logicielle.exceptions.ProductDoesNotExistsException
 import dev.x_mathias.qualite_logicielle.repositories.OrderRepository
+import dev.x_mathias.qualite_logicielle.repositories.ProductRepository
 import io.github.oshai.kotlinlogging.KLogger
 import org.springframework.stereotype.Service
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 
@@ -24,6 +28,7 @@ class StripeService(
     private val objectMapper: ObjectMapper,
     private val orderRepository: OrderRepository,
     private val logger: KLogger,
+    private val productRepository: ProductRepository,
 ) {
     init {
         Stripe.apiKey = stripeConfig.privateKey
@@ -48,6 +53,24 @@ class StripeService(
                 orderRepository.save(order)
                 logger.info { "Successfully processed payment intent for order $orderId" }
             }
+            "checkout.session.expired" -> {
+                val orderId = event["data"]["object"]["metadata"]["orderId"].asText()
+                logger.info { "Payment for order $orderId has expired" }
+                val order =
+                    orderRepository.findById(UUID.fromString(orderId)).orElseThrow { OrderDoesNotExistException() }
+                order.status = OrderStatus.CANCELED
+                order.products.forEach { productLine ->
+                    try {
+                        productRepository.findById(productLine.product.id).orElseThrow { ProductDoesNotExistsException() }.also {
+                            it.stock += productLine.quantity
+                            productRepository.save(it)
+                        }
+                    } catch (_: Exception) {
+                        logger.warn { "Product ${productLine.product.id} not found. Stock can't be updated." }
+                    }
+                }
+                orderRepository.save(order)
+            }
         }
     }
 
@@ -70,10 +93,15 @@ class StripeService(
                 ).build()
         }
 
+
         val params: SessionCreateParams = SessionCreateParams.builder()
             .setMode(SessionCreateParams.Mode.PAYMENT)
             .addAllLineItem(products)
+            .setExpiresAt(Instant.now().plus(30, ChronoUnit.MINUTES).epochSecond)
             .setSuccessUrl("https://storage.googleapis.com/pod_public/800webp/200776.webp")
+            .putMetadata(
+                "orderId", orderDocument.id.toString()
+            )
             .setPaymentIntentData(
                 PaymentIntentData.builder().putAllMetadata(
                     mapOf(

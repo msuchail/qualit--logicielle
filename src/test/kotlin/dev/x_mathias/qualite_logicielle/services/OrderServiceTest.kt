@@ -50,6 +50,8 @@ class OrderServiceTest : AbstractServiceTestClass() {
     @BeforeAll
     fun beforeAll() {
         val shippingAddress = AddressRequestDto(
+            firstName = "Pierre",
+            lastName = "DUPONT",
             streetNumber = 12,
             streetName = "Rue du Pilat",
             city = "Saint Petersburg",
@@ -58,6 +60,8 @@ class OrderServiceTest : AbstractServiceTestClass() {
             country = "France"
         )
         val invoiceAddress = AddressRequestDto(
+            firstName = "Pierre",
+            lastName = "DUPONT",
             streetNumber = 12,
             streetName = "Rue du Pilat",
             city = "Lyon",
@@ -66,6 +70,8 @@ class OrderServiceTest : AbstractServiceTestClass() {
             country = "France"
         )
         val randomAddress = AddressRequestDto(
+            firstName = "Pierre",
+            lastName = "DUPONT",
             streetNumber = 12,
             streetName = "Rue du Pilat",
             city = "Random",

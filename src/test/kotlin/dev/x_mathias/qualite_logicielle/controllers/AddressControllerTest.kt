@@ -33,6 +33,8 @@ class AddressControllerTest: AbstractControllerTestClass() {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.writeValueAsString(
                 AddressRequestDto(
+                    firstName = "Pierre",
+                    lastName = "DUPONT",
                     streetNumber = 1,
                     streetName = "Rue du Pilat",
                     city = "LYON",
@@ -55,6 +57,8 @@ class AddressControllerTest: AbstractControllerTestClass() {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.writeValueAsString(
                 AddressRequestDto(
+                    firstName = "Pierre",
+                    lastName = "DUPONT",
                     streetNumber = 1,
                     streetName = "Rue du Pilat",
                     city = "LYON",
@@ -79,6 +83,8 @@ class AddressControllerTest: AbstractControllerTestClass() {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.writeValueAsString(
                 AddressRequestDto(
+                    firstName = "Pierre",
+                    lastName = "DUPONT",
                     streetNumber = 1,
                     streetName = "Rue du Pilat",
                     city = "LYON",
@@ -165,6 +171,8 @@ class AddressControllerTest: AbstractControllerTestClass() {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.writeValueAsString(
                 AddressRequestDto(
+                    firstName = "Pierre",
+                    lastName = "DUPONT",
                     streetNumber = 1,
                     streetName = "Rue du Pilat",
                     city = "PARIS",
@@ -186,6 +194,8 @@ class AddressControllerTest: AbstractControllerTestClass() {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.writeValueAsString(
                 AddressRequestDto(
+                    firstName = "Pierre",
+                    lastName = "DUPONT",
                     streetNumber = 2,
                     streetName = "Rue du Pilat",
                     city = "PARIS",
@@ -207,6 +217,8 @@ class AddressControllerTest: AbstractControllerTestClass() {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.writeValueAsString(
                 AddressRequestDto(
+                    firstName = "Pierre",
+                    lastName = "DUPONT",
                     streetNumber = 1,
                     streetName = "Rue du Pilat",
                     city = "PARIS",
@@ -226,6 +238,8 @@ class AddressControllerTest: AbstractControllerTestClass() {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.writeValueAsString(
                 AddressRequestDto(
+                    firstName = "Pierre",
+                    lastName = "DUPONT",
                     streetNumber = 2,
                     streetName = "Rue du Pilat",
                     city = "PARIS",
@@ -245,6 +259,8 @@ class AddressControllerTest: AbstractControllerTestClass() {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.writeValueAsString(
                 AddressRequestDto(
+                    firstName = "Pierre",
+                    lastName = "DUPONT",
                     streetNumber = 2,
                     streetName = "Rue du Pilat",
                     city = "PARIS",

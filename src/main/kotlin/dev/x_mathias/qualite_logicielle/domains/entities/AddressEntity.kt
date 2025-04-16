@@ -10,6 +10,8 @@ class AddressEntity (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
     val userId: String,
+    val firstName: String,
+    val lastName: String,
     val streetNumber: Short,
     val streetName: String,
     val city: String,

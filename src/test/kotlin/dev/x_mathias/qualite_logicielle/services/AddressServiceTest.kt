@@ -32,6 +32,8 @@ class AddressServiceTest: AbstractServiceTestClass() {
     @Order(1)
     fun testCreateAddress() {
         val addressRequest = AddressRequestDto(
+            firstName = "Pierre",
+            lastName = "DUPONT",
             streetNumber = 12,
             streetName = "Some street name",
             city = "LYON",
@@ -63,6 +65,8 @@ class AddressServiceTest: AbstractServiceTestClass() {
         addressService.create(
             "USERID2",
             AddressRequestDto(
+                firstName = "Pierre",
+                lastName = "DUPONT",
                 streetNumber = 12,
                 streetName = "Some street name 2",
                 city = "LYON",
@@ -83,6 +87,8 @@ class AddressServiceTest: AbstractServiceTestClass() {
         val result = addressService.update(
             1, "USERID",
             AddressRequestDto(
+                firstName = "Pierre",
+                lastName = "DUPONT",
                 streetNumber = 12,
                 streetName = "Some street name 3",
                 city = "LYON",
@@ -102,6 +108,8 @@ class AddressServiceTest: AbstractServiceTestClass() {
                 5,
                 userId = "USERID",
                 AddressRequestDto(
+                    firstName = "Pierre",
+                    lastName = "DUPONT",
                     streetNumber = 12,
                     streetName = "Some street name 3",
                     city = "LYON",
@@ -133,6 +141,8 @@ class AddressServiceTest: AbstractServiceTestClass() {
         assertThatExceptionOfType(NullPointerException::class.java).isThrownBy {
             addressMapper.fromEntity(
                 AddressEntity(
+                    firstName = "Pierre",
+                    lastName = "DUPONT",
                     id = null,
                     userId = "USERID",
                     streetNumber = 12,

@@ -1,9 +1,6 @@
 package dev.x_mathias.qualite_logicielle.controllers
 
-import dev.x_mathias.qualite_logicielle.domains.dtos.AddressRequestDto
-import dev.x_mathias.qualite_logicielle.domains.dtos.OrderRequestDto
-import dev.x_mathias.qualite_logicielle.domains.dtos.ProductFamilyRequestDto
-import dev.x_mathias.qualite_logicielle.domains.dtos.ProductRequestDto
+import dev.x_mathias.qualite_logicielle.domains.dtos.*
 import dev.x_mathias.qualite_logicielle.repositories.OrderRepository
 import dev.x_mathias.qualite_logicielle.services.AddressService
 import dev.x_mathias.qualite_logicielle.services.OrderService
@@ -90,6 +87,8 @@ class OrderControllerTest: AbstractControllerTestClass() {
         addressService.create(
             userId = margotUUID,
             addressRequestDto = AddressRequestDto(
+                firstName = "A".repeat(FIRST_NAME_MIN_LENGTH),
+                lastName = "A".repeat(LAST_NAME_MIN_LENGTH),
                 streetNumber = 1,
                 streetName = "Rue du Pilat",
                 city = "LYON",
@@ -101,6 +100,8 @@ class OrderControllerTest: AbstractControllerTestClass() {
         addressService.create(
             userId = leonardoUUID,
             addressRequestDto = AddressRequestDto(
+                firstName = "A".repeat(FIRST_NAME_MIN_LENGTH),
+                lastName = "A".repeat(LAST_NAME_MIN_LENGTH),
                 streetNumber = 1,
                 streetName = "Rue du Pilat",
                 city = "PARIS",
