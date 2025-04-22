@@ -12,14 +12,20 @@ services:
 #      - SPRING_DATA_MONGODB_HOST=mongodb
 #      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-app:3306/database
 #    depends_on:
-#      - mysql-keycloack
-#      - mysql-app
-#      - mongodb
+#      mysql-app:
+#        condition: service_healthy
+#      mongodb:
+#        condition: service_healthy
 #    ports:
 #      - "8080:8080"
 
   mysql-keycloack:
     image: mysql:8.0
+    healthcheck:
+      interval: 3s
+      retries: 10
+      timeout: 5s
+      test: [ "CMD", "mysql", "--user=username", "--password=password", "--execute", "SHOW DATABASES;" ]
     networks:
       - default
     ports:
@@ -34,6 +40,11 @@ services:
 
   mysql-app:
     image: mysql:8.0
+    healthcheck:
+      interval: 3s
+      retries: 10
+      timeout: 5s
+      test: [ "CMD", "mysql", "--user=username", "--password=password", "--execute", "SHOW DATABASES;" ]
     networks:
       - default
     ports:
@@ -51,7 +62,8 @@ services:
     ports:
       - "8000:8080"
     depends_on:
-      - mysql-keycloack
+      mysql-keycloack:
+        condition: service_healthy
     entrypoint: "/opt/keycloak/bin/kc.sh start-dev"
     environment:
       - KC_BOOTSTRAP_ADMIN_PASSWORD=password
@@ -63,6 +75,11 @@ services:
 
   mongodb:
     image: mongo:7.0
+    healthcheck:
+      interval: 3s
+      retries: 5
+      timeout: 5s
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb:27017/test --quiet
     networks:
       - default
     ports:
