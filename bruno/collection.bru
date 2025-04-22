@@ -5,11 +5,18 @@ auth {
 auth:oauth2 {
   grant_type: password
   access_token_url: {{KEYCLOACK_URL}}
+  refresh_token_url: 
   username: leonardo
   password: {{LEONARDO_PASSWORD}}
   client_id: API
   client_secret: 
   scope: 
+  credentials_placement: body
+  credentials_id: credentials
+  token_placement: header
+  token_header_prefix: Bearer
+  auto_fetch_token: true
+  auto_refresh_token: false
 }
 
 vars:pre-request {
@@ -17,10 +24,4 @@ vars:pre-request {
   productId: FIGLOL
   addressId: 1
   orderId: 
-}
-
-script:post-response {
-  if(req.getAuthMode() == 'oauth2' && res.body.access_token) {
-      bru.setVar('access_token_set_by_collection_script', res.body.access_token);
-  }
 }

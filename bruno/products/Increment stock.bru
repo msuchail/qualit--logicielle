@@ -7,11 +7,7 @@ meta {
 put {
   url: {{BASE_URL}}/products/{{productId}}/increment-stock={{quantity}}
   body: json
-  auth: bearer
-}
-
-auth:bearer {
-  token: {{access_token_set_by_collection_script}}
+  auth: inherit
 }
 
 body:json {

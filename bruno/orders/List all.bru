@@ -7,9 +7,5 @@ meta {
 get {
   url: {{BASE_URL}}/orders/
   body: none
-  auth: bearer
-}
-
-auth:bearer {
-  token: {{access_token_set_by_collection_script}}
+  auth: inherit
 }
